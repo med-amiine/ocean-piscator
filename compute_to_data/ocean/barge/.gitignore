@@ -1,0 +1,17 @@
+# Project specific
+artifacts/
+ganache-db/
+
+# IDE side effects
+.idea/
+
+# Emacs
+*~
+
+# Mac OS Filesystem artifacts
+.DS_Store
+**/.DS_Store
+._*
+
+# Barge logs
+start_ocean.log
