@@ -1,16 +1,15 @@
 pragma solidity ^0.4.17;
 
 /**
- * @title Elastikchain
+ * @title Piscator
  * @author Mohammed El Amine Idmoussi
- * @notice This is the main contract that will manage other part of the Dapp`.
  */
 
-contract Elastikchain{
+contract Piscator{
     address[] public deployedChallenges;
     
     function creatChallenge(uint minimum) public{
-        address newChallenge = new Elastik(minimum, msg.sender, true);
+        address newChallenge = new Pisca(minimum, msg.sender, true);
         deployedChallenges.push(newChallenge);
     }
     
@@ -19,86 +18,86 @@ contract Elastikchain{
     }
 }
 
-contract Elastik {
+contract Pisca {
     
-    struct Dapp {
-        string DappName;
+    struct Data {
+        string dataName;
         uint value;
         address recipient;
         bool complete;
         uint votersCount;
-        uint investorsCount;
+        uint buyerCount;
         mapping(address => bool) voters;
-        mapping(address => bool) investors;
+        mapping(address => bool) data_buyer;
     }
 
-    Dapp[] public projects;
-    address public sponsor;
+    Data[] public provider;
+    address public dataWhale;
     uint public minimumContribution;
     
     
     uint public winnerIndex;
     bool public contractStatus;
 
-    // only the sponsor can call restricted functions
+    // only the dataWhale can call restricted functions
     modifier restricted() {
-        require(msg.sender == sponsor);
+        require(msg.sender == dataWhale);
         _;
     }
 
         /**
-    * Constructor function for Elastik
+    * Constructor function for Pisca
     *
     * @param _minimum The minimum contribution
-    * @param _creator The address of the sponsor
+    * @param _creator The address of the dataWhale
     * @param _status The status of the contract
     */
     
     constructor(uint minimum, address creator, bool status) public {
-        sponsor = creator;
+        dataWhale = creator;
         minimumContribution = minimum;
         contractStatus = status;
     }
 
     function fund(uint index) public payable {
-        Dapp storage request = projects[index];
+        Data storage request = provider[index];
         require(!contractStatus == false);
         require (msg.value > minimumContribution);
 
-       request.investors[msg.sender] = true;
-       if(msg.sender != sponsor){
-            request.investorsCount++;
+       request.data_buyer[msg.sender] = true;
+       if(msg.sender != dataWhale){
+            request.buyerCount++;
        }
     }
     
     /**
-   * Add Dapps to the Elastik contract.
-   * @param DappName the name of the dapp
+   * Add Datas to the Pisca contract.
+   * @param dataName the name of the Data
    * @param value the invested value
-   * @param recipient the Dapp team address
-   * @push Dapp.
+   * @param recipient the Data provider team address
+   * @push Data.
    */
-    function createDapp(string DappName, uint value, address recipient)
+    function createData(string dataName, uint value, address recipient)
     public restricted
     {
-     // to add check if a Dapp address exist already
+     // to add check if a Data address exist already
      
-        Dapp memory newDapp = Dapp({
-           DappName: DappName,
+        Data memory newData = Data({
+           dataName: dataName,
            value: value,
            recipient: recipient,
            complete: false,
            votersCount: 0,
-           investorsCount:0
+           buyerCount:0
         });
 
-        projects.push(newDapp);
+        provider.push(newData);
     }
 
-    function VoteDapp(uint index) public {
-        Dapp storage request = projects[index];
+    function VoteData(uint index) public {
+        Data storage request = provider[index];
 
-        //require(investors[msg.sender]);
+        //require(data_buyer[msg.sender]);
         require(!contractStatus == false);
         require(!request.voters[msg.sender]);
         require(!request.complete == true);
@@ -110,42 +109,45 @@ contract Elastik {
 
     function getWinner() public restricted {
         require(!contractStatus == false);
-         //get the high votersCount Dapp and send to finalize
-        // Dapp storage request = projects[index]
+         //get the high votersCount Data and send to finalize
+        // Data storage request = provider[index]
         uint256 largest = 0; 
         uint256 i;
 
-        for(i = 0; i < projects.length ; i++){
-            if(projects[i].votersCount > largest) {
-                largest = projects[i].votersCount;
+        for(i = 0; i < provider.length ; i++){
+            if(provider[i].votersCount > largest) {
+                largest = provider[i].votersCount;
                 winnerIndex = i;
             } 
         }
-        finalizeDapp(winnerIndex);
+        // this function could be called by the dataWhale if he find a data provider
+        finalizeData(winnerIndex);
+
     }
     
-    // after milestone validation sponsors can send money
-    function milestoneValidation(uint index) public restricted{
-            Dapp storage request = projects[index];
+    // after running test and models validation dataWhales can send rest of money
+    // remember the quality could be mesure by the accuracy of the models
+    function modelValidation(uint index) public restricted{
+            Data storage request = provider[index];
             request.recipient.transfer(request.value);
     }
     
     
 
-    function finalizeDapp(uint index ) public restricted {
+    function finalizeData(uint index ) public restricted {
         require(!contractStatus == false);
-        Dapp storage request = projects[index];
+        Data storage request = provider[index];
 
         //require(request.votersCount > 2));
         require(!request.complete);
-        // the investors money is sent to the wineer
+        // the data_buyer money is sent to the winner
         request.recipient.transfer(request.value);
         // the prize is sent to the winner
         request.recipient.transfer(address(this).balance);
         request.complete = true;
         contractStatus == false;
         //mark all project as complete function completeAll() or just close the contract
-        //add reset all projects code here
+        //add reset all provider code here
         //return winner index
      }
 
