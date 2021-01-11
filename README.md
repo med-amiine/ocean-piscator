@@ -4,7 +4,7 @@
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://GitHub.com/Naereen/ama)
 
 
-# Ocean-Piscator
+## Ocean-Piscator
 A contract to help buyers get the data they need and also choose among existing data by providing a score.
 it will help choose the best data from the ocean protocol markets
 
@@ -14,7 +14,7 @@ it will help choose the best data from the ocean protocol markets
 2. Go to the project and launch `npm install`
 3. Start the project using this command `ng serve`
 
-
+## workflow
 As a dataWhale is ready to dive deep to get his data he will be able to poste a request and accept data that will participate lets say dsata about sharks.
 You need to fund the contract (fund) by the prize.(remember for every challenge you need to create a diffirent contract simply call Picsator )
 Set tight and let the users decide which Data is more promising by voting (VoteData)they will get part of the price if they run a model to verify if data is accurate.
